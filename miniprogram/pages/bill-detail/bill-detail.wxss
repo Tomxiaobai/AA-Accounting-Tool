@@ -104,7 +104,7 @@
   font-size: 26rpx;
 }
 
-/* ===== Tab 栏 - iOS 分段控件 ===== */
+/* ===== Tab 栏 ===== */
 .tab-bar {
   display: flex;
   background: rgba(118, 118, 128, 0.12);
@@ -143,8 +143,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx 28rpx;
-  padding-bottom: 36rpx;
+  padding: 24rpx 28rpx 36rpx;
+}
+
+/* 成员卡片不需要底部 hint 间距 */
+.member-card {
+  padding-bottom: 24rpx;
 }
 
 .record-left {
@@ -210,11 +214,6 @@
   opacity: 0.4;
 }
 
-/* 成员卡片不需要额外底部间距 */
-.member-card {
-  padding-bottom: 24rpx;
-}
-
 /* 成员头像 */
 .member-avatar {
   width: 60rpx;
@@ -234,24 +233,27 @@
   align-items: flex-end;
 }
 
-/* ===== 结算弹窗 ===== */
+/* ===== 结算弹窗（底部弹出） ===== */
 .settlement-dialog {
-  width: 660rpx;
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  padding: 0;
+  padding: 0 0 env(safe-area-inset-bottom);
+}
+
+.settlement-dialog .modal-handle {
+  margin-top: 20rpx;
 }
 
 .settlement-dialog .modal-header {
-  padding: 40rpx 40rpx 24rpx;
+  padding: 0 40rpx 24rpx;
   border-bottom: 1rpx solid rgba(0, 0, 0, 0.06);
 }
 
 .settlement-scroll {
   flex: 1;
   padding: 28rpx 40rpx;
-  max-height: 60vh;
+  max-height: 55vh;
 }
 
 .settlement-overview {
@@ -357,6 +359,6 @@
 }
 
 .settlement-footer {
-  padding: 24rpx 40rpx 40rpx;
+  padding: 24rpx 40rpx 20rpx;
   border-top: 1rpx solid rgba(0, 0, 0, 0.06);
 }

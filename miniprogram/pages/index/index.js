@@ -58,6 +58,13 @@ Page({
     this.setData({ loginName: e.detail.value });
   },
 
+  onLoginNameBlur(e) {
+    // type="nickname" 选择微信昵称后通过 blur 事件回写
+    if (e.detail.value) {
+      this.setData({ loginName: e.detail.value });
+    }
+  },
+
   handleLogin() {
     var name = this.data.loginName.trim();
     if (!name) {
@@ -75,40 +82,6 @@ Page({
       loginName: ''
     });
     this.loadBills();
-  },
-
-  handleWxLogin() {
-    var that = this;
-    // wx.getUserProfile 在新版基础库已废弃，尝试调用，失败则提示手动输入
-    if (wx.getUserProfile) {
-      wx.getUserProfile({
-        desc: '用于AA记账身份识别',
-        success: function (res) {
-          var nickName = (res.userInfo && res.userInfo.nickName) || '';
-          // 新版微信返回"微信用户"作为默认昵称，视为无效
-          if (!nickName || nickName === '微信用户') {
-            wx.showToast({ title: '无法获取昵称，请手动输入', icon: 'none' });
-            return;
-          }
-          var app = getApp();
-          var userId = 'wx_' + Date.now();
-          app.setUserInfo(userId, nickName);
-          that.setData({
-            showLoginDialog: false,
-            isLoggedIn: true,
-            userName: nickName,
-            userId: userId,
-            loginName: ''
-          });
-          that.loadBills();
-        },
-        fail: function () {
-          wx.showToast({ title: '授权失败，请手动输入昵称', icon: 'none' });
-        }
-      });
-    } else {
-      wx.showToast({ title: '当前版本不支持，请手动输入昵称', icon: 'none' });
-    }
   },
 
   // 退出登录

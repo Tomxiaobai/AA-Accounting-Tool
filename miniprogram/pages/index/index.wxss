@@ -197,14 +197,3 @@
   flex-direction: column;
   gap: 12rpx;
 }
-
-.wx-login-btn {
-  font-size: 28rpx;
-  color: #07c160;
-  border-color: rgba(7, 193, 96, 0.25);
-  background: rgba(7, 193, 96, 0.05);
-}
-
-.wx-login-btn:active {
-  background: rgba(7, 193, 96, 0.1);
-}

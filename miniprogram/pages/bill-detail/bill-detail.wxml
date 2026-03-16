@@ -72,10 +72,10 @@ module.exports = {
     <!-- 操作按钮 -->
     <view class="action-row">
       <button class="btn btn-primary action-btn" bindtap="goAddExpense">
-        <text>➕ 添加消费</text>
+        ➕ 添加消费
       </button>
       <button class="btn btn-outline action-btn" open-type="share">
-        <text>📤 分享邀请</text>
+        📤 分享邀请
       </button>
     </view>
 
@@ -177,9 +177,10 @@ module.exports = {
   </block>
 </view>
 
-<!-- 结算弹窗 -->
+<!-- 结算弹窗（底部弹出） -->
 <view class="modal-mask" wx:if="{{showSettlement}}" bindtap="hideSettlement"></view>
 <view class="modal-dialog settlement-dialog" wx:if="{{showSettlement}}">
+  <view class="modal-handle"></view>
   <view class="modal-header">
     <text class="modal-title">AA结算</text>
     <text class="modal-desc text-muted">自动计算转账方案</text>
@@ -227,7 +228,7 @@ module.exports = {
     </view>
 
     <view class="settlement-perfect" wx:if="{{settlementData.transfers.length === 0}}">
-      <text>✅ 完美平衡！无需转账</text>
+      ✅ 完美平衡！无需转账
     </view>
   </scroll-view>
 
@@ -239,6 +240,7 @@ module.exports = {
 <!-- 添加成员弹窗 -->
 <view class="modal-mask" wx:if="{{showAddMember}}" bindtap="hideAddMember"></view>
 <view class="modal-dialog" wx:if="{{showAddMember}}">
+  <view class="modal-handle"></view>
   <view class="modal-header">
     <text class="modal-title">添加成员</text>
     <text class="modal-desc text-muted">输入成员昵称</text>
@@ -251,7 +253,7 @@ module.exports = {
       value="{{newMemberName}}"
       bindinput="onMemberNameInput"
       bindconfirm="handleAddMember"
-      focus="{{showAddMember}}"
+      adjust-position="{{true}}"
     />
   </view>
   <view class="modal-footer">

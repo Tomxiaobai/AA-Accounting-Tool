@@ -1,57 +1,64 @@
 .page {
-  padding: 24rpx 32rpx;
+  padding: 0 32rpx;
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  overflow: hidden;
 }
 
+/* ===== 金额输入区域 ===== */
+.amount-section {
+  padding: 40rpx 0 32rpx;
+  text-align: center;
+}
+
+.amount-label {
+  font-size: 26rpx;
+  color: #8e8e93;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.amount-input-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 12rpx 0;
+}
+
+.amount-prefix {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: #34c759;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.amount-input {
+  font-size: 72rpx;
+  font-weight: 700;
+  color: #1c1c1e;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+/* ===== 表单区域 ===== */
 .section {
-  margin-bottom: 36rpx;
+  margin-bottom: 32rpx;
 }
 
 .section-label {
   font-size: 26rpx;
-  font-weight: 600;
+  font-weight: 500;
   color: #8e8e93;
   display: block;
   margin-bottom: 16rpx;
-  text-transform: uppercase;
-  letter-spacing: 0.5rpx;
-}
-
-/* ===== 金额输入 ===== */
-.amount-input-wrap {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border: 2rpx solid rgba(0, 0, 0, 0.08);
-  border-radius: 20rpx;
-  padding: 28rpx 24rpx;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.amount-input-wrap:focus-within {
-  border-color: #34c759;
-  box-shadow: 0 0 0 4rpx rgba(52, 199, 89, 0.12);
-}
-
-.amount-prefix {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #34c759;
-  margin-right: 12rpx;
-}
-
-.amount-input {
-  flex: 1;
-  font-size: 44rpx;
-  font-weight: 600;
-  color: #1c1c1e;
 }
 
 /* ===== 分类选择 ===== */
 .category-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .category-item {
@@ -59,27 +66,27 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: calc(33.33% - 12rpx);
-  height: 120rpx;
+  width: calc((100% - 24rpx) / 3);
+  height: 112rpx;
   background: #ffffff;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   border: 2rpx solid rgba(0, 0, 0, 0.06);
-  transition: all 0.2s ease;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
 }
 
 .category-active {
   background: rgba(52, 199, 89, 0.06);
   border-color: #34c759;
-  box-shadow: 0 0 0 4rpx rgba(52, 199, 89, 0.1);
 }
 
 .category-emoji {
-  font-size: 36rpx;
-  margin-bottom: 6rpx;
+  font-size: 32rpx;
+  margin-bottom: 4rpx;
 }
 
 .category-name {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #1c1c1e;
   font-weight: 500;
 }
@@ -92,9 +99,10 @@
   background: #ffffff;
   border: 2rpx solid rgba(0, 0, 0, 0.08);
   border-radius: 16rpx;
-  padding: 26rpx 24rpx;
+  padding: 24rpx;
   font-size: 30rpx;
   color: #1c1c1e;
+  width: 100%;
 }
 
 .picker-arrow {
@@ -105,10 +113,10 @@
 
 /* ===== 提交按钮 ===== */
 .submit-btn {
-  margin-top: 48rpx;
-  height: 92rpx;
+  margin-top: 40rpx;
+  height: 88rpx;
   font-size: 30rpx;
-  border-radius: 22rpx;
+  border-radius: 20rpx;
   box-shadow: 0 4rpx 20rpx rgba(52, 199, 89, 0.3);
 }
 

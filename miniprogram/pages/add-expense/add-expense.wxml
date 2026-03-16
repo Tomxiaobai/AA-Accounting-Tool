@@ -11,17 +11,18 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
 
 <view class="page">
   <!-- 金额输入 -->
-  <view class="section">
-    <text class="section-label">金额</text>
+  <view class="amount-section">
+    <text class="amount-label text-muted">金额</text>
     <view class="amount-input-wrap">
       <text class="amount-prefix">¥</text>
       <input
         class="amount-input"
         type="digit"
         placeholder="0.00"
+        placeholder-style="color:#c7c7cc;"
         value="{{amount}}"
         bindinput="onAmountInput"
-        focus="true"
+        adjust-position="{{true}}"
       />
     </view>
   </view>
@@ -52,6 +53,7 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
       placeholder-style="color:#c7c7cc;"
       value="{{note}}"
       bindinput="onNoteInput"
+      adjust-position="{{true}}"
     />
   </view>
 

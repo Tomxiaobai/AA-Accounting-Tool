@@ -8,6 +8,10 @@ page {
   -webkit-font-smoothing: antialiased;
 }
 
+view, text, button, input, picker, scroll-view {
+  box-sizing: border-box;
+}
+
 /* 通用卡片 */
 .card {
   background: #ffffff;
@@ -91,13 +95,13 @@ page {
   opacity: 0.6;
 }
 
-/* 输入框 - 关键修复：白底+边框，在任何背景上都清晰可见 */
+/* 输入框 */
 .input-field {
   background: #ffffff;
   border: 2rpx solid rgba(0, 0, 0, 0.08);
   border-radius: 16rpx;
-  padding: 26rpx 24rpx;
-  font-size: 30rpx;
+  padding: 26rpx 16rpx;
+  font-size: 28rpx;
   width: 100%;
   box-sizing: border-box;
   color: #1c1c1e;
@@ -115,7 +119,7 @@ page {
   text-align: center;
 }
 
-/* placeholder 居中（通过 placeholder-class 属性使用） */
+/* placeholder 居中 */
 .placeholder-center {
   text-align: center;
 }
@@ -167,7 +171,7 @@ page {
   font-size: 56rpx;
 }
 
-/* ===== 弹窗通用样式 ===== */
+/* ===== 底部弹窗样式（键盘友好） ===== */
 .modal-mask {
   position: fixed;
   top: 0;
@@ -175,35 +179,39 @@ page {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20rpx);
-  -webkit-backdrop-filter: blur(20rpx);
   z-index: 100;
 }
 
 .modal-dialog {
   position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 620rpx;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #ffffff;
-  border-radius: 28rpx;
-  padding: 48rpx 40rpx 40rpx;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
   z-index: 101;
-  box-shadow: 0 24rpx 80rpx rgba(0, 0, 0, 0.18),
-              0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -8rpx 40rpx rgba(0, 0, 0, 0.12);
+}
+
+.modal-handle {
+  width: 64rpx;
+  height: 8rpx;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4rpx;
+  margin: 0 auto 28rpx;
 }
 
 .modal-header {
-  margin-bottom: 36rpx;
+  margin-bottom: 32rpx;
   text-align: center;
 }
 
 .modal-title {
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 700;
   display: block;
-  margin-bottom: 10rpx;
+  margin-bottom: 8rpx;
   letter-spacing: -0.5rpx;
 }
 
@@ -214,7 +222,7 @@ page {
 }
 
 .modal-body {
-  margin-bottom: 36rpx;
+  margin-bottom: 32rpx;
 }
 
 .modal-footer {
