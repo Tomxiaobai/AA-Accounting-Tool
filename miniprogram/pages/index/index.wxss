@@ -1,36 +1,68 @@
 .page {
-  padding: 32rpx;
+  padding: 24rpx 32rpx;
   padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
 }
 
+/* 顶部区域 */
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 32rpx;
+  margin-bottom: 36rpx;
+  padding-top: 8rpx;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
-  font-size: 44rpx;
-  font-weight: 700;
-  letter-spacing: -0.5rpx;
+  font-size: 56rpx;
+  font-weight: 800;
+  letter-spacing: -1rpx;
+  line-height: 1.15;
 }
 
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 12rpx;
+  background: rgba(52, 199, 89, 0.1);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.user-badge-icon {
+  font-size: 22rpx;
+}
+
+.user-badge-name {
+  font-size: 24rpx;
+  color: #34c759;
+  font-weight: 600;
+}
+
+/* 新建按钮 */
 .create-btn {
   display: flex;
   align-items: center;
-  padding: 0 32rpx;
-  height: 72rpx;
-  border-radius: 36rpx;
+  padding: 0 28rpx;
+  height: 68rpx;
+  border-radius: 34rpx;
   font-size: 28rpx;
-  box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.25);
+  margin-top: 8rpx;
+  box-shadow: 0 4rpx 20rpx rgba(52, 199, 89, 0.3);
 }
 
 .btn-icon {
-  margin-right: 8rpx;
-  font-size: 32rpx;
+  margin-right: 6rpx;
+  font-size: 28rpx;
+  font-weight: 300;
 }
 
+/* 加载 */
 .loading-wrap {
   display: flex;
   align-items: center;
@@ -38,48 +70,50 @@
   padding: 120rpx 0;
 }
 
+/* 空状态 */
 .empty-title {
-  font-size: 36rpx;
-  font-weight: 600;
+  font-size: 34rpx;
+  font-weight: 700;
   margin-bottom: 12rpx;
 }
 
 .empty-desc {
   font-size: 26rpx;
-  color: #86868b;
+  color: #8e8e93;
   margin-bottom: 40rpx;
-  max-width: 400rpx;
+  max-width: 420rpx;
   text-align: center;
+  line-height: 1.6;
 }
 
 .empty-btn {
-  padding: 0 40rpx;
+  padding: 0 48rpx;
   height: 80rpx;
   border-radius: 40rpx;
   font-size: 28rpx;
 }
 
-/* 账单列表 */
+/* ===== 账单列表 ===== */
 .bill-list {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
 .bill-card {
-  padding: 32rpx;
-  transition: transform 0.2s;
+  padding: 28rpx 32rpx;
+  transition: transform 0.15s ease;
 }
 
 .bill-card:active {
-  transform: scale(0.98);
+  transform: scale(0.975);
 }
 
 .bill-card-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 
 .bill-info {
@@ -88,9 +122,10 @@
 }
 
 .bill-name {
-  font-size: 34rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  margin-bottom: 8rpx;
+  margin-bottom: 6rpx;
+  letter-spacing: -0.3rpx;
 }
 
 .bill-date {
@@ -98,17 +133,17 @@
 }
 
 .bill-icon-wrap {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 20rpx;
-  background: #f0fdf4;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, rgba(52, 199, 89, 0.08) 0%, rgba(52, 199, 89, 0.15) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .bill-icon {
-  font-size: 36rpx;
+  font-size: 32rpx;
 }
 
 .bill-card-bottom {
@@ -123,18 +158,18 @@
 
 .bill-amount-label {
   font-size: 22rpx;
-  margin-bottom: 4rpx;
+  margin-bottom: 2rpx;
 }
 
 .bill-amount-value {
-  font-size: 36rpx;
-  font-weight: 600;
+  font-size: 34rpx;
+  font-weight: 700;
 }
 
 .bill-divider {
-  width: 2rpx;
-  height: 48rpx;
-  background: #e5e5ea;
+  width: 1rpx;
+  height: 44rpx;
+  background: rgba(0, 0, 0, 0.08);
   margin: 0 28rpx;
 }
 
@@ -146,60 +181,30 @@
 }
 
 .member-icon {
-  font-size: 28rpx;
-}
-
-/* 弹窗 */
-.modal-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 100;
-}
-
-.modal-dialog {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 600rpx;
-  background: #fff;
-  border-radius: 32rpx;
-  padding: 40rpx;
-  z-index: 101;
-}
-
-.modal-header {
-  margin-bottom: 32rpx;
-}
-
-.modal-title {
-  font-size: 38rpx;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.modal-desc {
   font-size: 26rpx;
+}
+
+.bill-hint {
   display: block;
+  font-size: 20rpx;
+  text-align: right;
+  margin-top: 10rpx;
+  opacity: 0.5;
 }
 
-.modal-body {
-  margin-bottom: 32rpx;
+/* ===== 登录弹窗 ===== */
+.login-footer {
+  flex-direction: column;
+  gap: 12rpx;
 }
 
-.modal-footer {
-  display: flex;
-  gap: 20rpx;
+.wx-login-btn {
+  font-size: 28rpx;
+  color: #07c160;
+  border-color: rgba(7, 193, 96, 0.25);
+  background: rgba(7, 193, 96, 0.05);
 }
 
-.modal-btn {
-  flex: 1;
-  height: 80rpx;
-  font-size: 30rpx;
-  border-radius: 20rpx;
+.wx-login-btn:active {
+  background: rgba(7, 193, 96, 0.1);
 }

@@ -5,6 +5,7 @@ Page({
   data: {
     billId: '',
     members: [],
+    memberNames: [],
     amount: '',
     category: '餐饮',
     categories: EXPENSE_CATEGORIES,
@@ -15,21 +16,30 @@ Page({
 
   onLoad(options) {
     this.setData({ billId: options.billId });
-    // 加载成员列表
     this.loadMembers(options.billId);
   },
 
   async loadMembers(billId) {
     try {
       const res = await api.getBillMembers(billId);
-      this.setData({ members: res.items });
+      var members = res.items;
+      var names = [];
+      for (var i = 0; i < members.length; i++) {
+        names.push(members[i].userName || members[i].userId || '未知');
+      }
+      this.setData({ members: members, memberNames: names });
     } catch (e) {
       console.error('加载成员失败:', e);
     }
   },
 
   onAmountInput(e) {
-    this.setData({ amount: e.detail.value });
+    var val = e.detail.value;
+    // 过滤负号，只允许正数
+    val = val.replace(/-/g, '');
+    this.setData({ amount: val });
+    // 返回处理后的值给 input 控件
+    return { value: val };
   },
 
   onNoteInput(e) {
@@ -52,11 +62,17 @@ Page({
       return;
     }
 
+    if (parseFloat(amount) > 1000000) {
+      wx.showToast({ title: '单笔金额不能超过100万', icon: 'none' });
+      return;
+    }
+
     if (selectedPayerIndex < 0 || selectedPayerIndex >= members.length) {
       wx.showToast({ title: '请选择付款人', icon: 'none' });
       return;
     }
 
+    // 用 userName 作为 payer（与成员的 userId 一致，因为 addMember 时 userId=name）
     const payer = members[selectedPayerIndex].userId;
 
     try {

@@ -16,7 +16,7 @@
     "minifyWXML": true,
     "urlCheck": false
   },
-  "compileType": "game",
+  "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
   "packOptions": {
     "ignore": [
@@ -51,7 +51,7 @@
     ],
     "include": []
   },
-  "appid": "wx7d8cde7c76ce0727",
+  "appid": "wxfe00a1209e35b92f",
   "editorSetting": {},
   "condition": {}
 }

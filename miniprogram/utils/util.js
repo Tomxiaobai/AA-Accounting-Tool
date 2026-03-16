@@ -3,9 +3,11 @@ function formatAmount(amount) {
   return '¥' + Number(amount || 0).toFixed(2);
 }
 
-// 格式化日期
+// 格式化日期（兼容时间戳和ISO字符串）
 function formatDate(dateStr) {
+  if (!dateStr) return '';
   const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
   var month = d.getMonth() + 1;
   var day = d.getDate();
   return d.getFullYear() + '/' + (month < 10 ? '0' + month : month) + '/' + (day < 10 ? '0' + day : day);

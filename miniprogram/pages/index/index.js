@@ -7,11 +7,29 @@ Page({
     loading: true,
     showCreateDialog: false,
     newBillName: '',
-    creating: false
+    creating: false,
+    // 登录
+    showLoginDialog: false,
+    loginName: '',
+    isLoggedIn: false,
+    userName: '',
+    userId: ''
   },
 
   onShow() {
-    this.loadBills();
+    var app = getApp();
+    var loggedIn = app.isLoggedIn();
+    this.setData({
+      isLoggedIn: loggedIn,
+      userName: app.globalData.userName,
+      userId: app.globalData.userId
+    });
+
+    if (loggedIn) {
+      this.loadBills();
+    } else {
+      this.setData({ loading: false, showLoginDialog: true });
+    }
   },
 
   async loadBills() {
@@ -27,8 +45,95 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.loadBills().then(() => wx.stopPullDownRefresh());
+    this.loadBills().then(function () { wx.stopPullDownRefresh(); });
   },
+
+  // ========== 登录 ==========
+
+  openLoginDialog() {
+    this.setData({ showLoginDialog: true });
+  },
+
+  onLoginNameInput(e) {
+    this.setData({ loginName: e.detail.value });
+  },
+
+  handleLogin() {
+    var name = this.data.loginName.trim();
+    if (!name) {
+      wx.showToast({ title: '请输入你的昵称', icon: 'none' });
+      return;
+    }
+    var app = getApp();
+    var userId = 'user_' + Date.now();
+    app.setUserInfo(userId, name);
+    this.setData({
+      showLoginDialog: false,
+      isLoggedIn: true,
+      userName: name,
+      userId: userId,
+      loginName: ''
+    });
+    this.loadBills();
+  },
+
+  handleWxLogin() {
+    var that = this;
+    // wx.getUserProfile 在新版基础库已废弃，尝试调用，失败则提示手动输入
+    if (wx.getUserProfile) {
+      wx.getUserProfile({
+        desc: '用于AA记账身份识别',
+        success: function (res) {
+          var nickName = (res.userInfo && res.userInfo.nickName) || '';
+          // 新版微信返回"微信用户"作为默认昵称，视为无效
+          if (!nickName || nickName === '微信用户') {
+            wx.showToast({ title: '无法获取昵称，请手动输入', icon: 'none' });
+            return;
+          }
+          var app = getApp();
+          var userId = 'wx_' + Date.now();
+          app.setUserInfo(userId, nickName);
+          that.setData({
+            showLoginDialog: false,
+            isLoggedIn: true,
+            userName: nickName,
+            userId: userId,
+            loginName: ''
+          });
+          that.loadBills();
+        },
+        fail: function () {
+          wx.showToast({ title: '授权失败，请手动输入昵称', icon: 'none' });
+        }
+      });
+    } else {
+      wx.showToast({ title: '当前版本不支持，请手动输入昵称', icon: 'none' });
+    }
+  },
+
+  // 退出登录
+  handleLogout() {
+    var that = this;
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出当前账号吗？',
+      success: function (res) {
+        if (res.confirm) {
+          var app = getApp();
+          app.setUserInfo('', '');
+          that.setData({
+            isLoggedIn: false,
+            userName: '',
+            userId: '',
+            bills: [],
+            showLoginDialog: true
+          });
+        }
+      }
+    });
+  },
+
+  // ========== 账单操作 ==========
 
   showCreateDialog() {
     this.setData({ showCreateDialog: true, newBillName: '' });
@@ -65,6 +170,45 @@ Page({
   goToBillDetail(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({ url: '/pages/bill-detail/bill-detail?id=' + id });
+  },
+
+  // 长按删除账单（仅创建者可操作）
+  handleDeleteBill(e) {
+    var id = e.currentTarget.dataset.id;
+    var name = e.currentTarget.dataset.name;
+    var creator = e.currentTarget.dataset.creator;
+    var app = getApp();
+
+    if (creator !== app.globalData.userId) {
+      wx.showToast({ title: '仅创建者可删除账单', icon: 'none' });
+      return;
+    }
+
+    var that = this;
+    wx.showModal({
+      title: '删除账单',
+      content: '确定删除「' + name + '」吗？所有消费记录和成员都将被删除，不可恢复。',
+      confirmColor: '#ff3b30',
+      success: function (res) {
+        if (res.confirm) {
+          that.doDeleteBill(id);
+        }
+      }
+    });
+  },
+
+  async doDeleteBill(id) {
+    try {
+      wx.showLoading({ title: '删除中...' });
+      await api.deleteBill(id);
+      wx.hideLoading();
+      wx.showToast({ title: '已删除', icon: 'success' });
+      this.loadBills();
+    } catch (err) {
+      wx.hideLoading();
+      console.error('删除账单失败:', err);
+      wx.showToast({ title: '删除失败', icon: 'none' });
+    }
   },
 
   formatAmount(amount) {

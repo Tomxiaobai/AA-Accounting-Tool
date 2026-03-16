@@ -49,6 +49,7 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
     <input
       class="input-field"
       placeholder="例如：午餐"
+      placeholder-style="color:#c7c7cc;"
       value="{{note}}"
       bindinput="onNoteInput"
     />
@@ -59,13 +60,12 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
     <text class="section-label">付款人</text>
     <picker
       mode="selector"
-      range="{{members}}"
-      range-key="userId"
+      range="{{memberNames}}"
       value="{{selectedPayerIndex}}"
       bindchange="selectPayer"
     >
       <view class="picker-field">
-        <text wx:if="{{selectedPayerIndex >= 0}}">👤 {{members[selectedPayerIndex].userId}}</text>
+        <text wx:if="{{selectedPayerIndex >= 0}}">👤 {{memberNames[selectedPayerIndex]}}</text>
         <text class="text-muted" wx:else>请选择付款人</text>
         <text class="picker-arrow">›</text>
       </view>
