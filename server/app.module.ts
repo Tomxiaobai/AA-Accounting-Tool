@@ -1,22 +1,17 @@
 import { APP_FILTER } from '@nestjs/core';
-import { Module } from '@nestjs/common';
-import { PlatformModule } from '@lark-apaas/fullstack-nestjs-core';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { GlobalExceptionFilter } from './common/filters/exception.filter';
+import { MockUserMiddleware } from './common/middleware/mock-user.middleware';
 import { ViewModule } from './modules/view/view.module';
 import { BillModule } from './modules/bill/bill.module';
+import { BillController } from './modules/bill/bill.controller';
 
 @Module({
   imports: [
-    // 平台 Module，提供平台能力
-    PlatformModule.forRoot(),
-    // ====== @route-section: business-modules START ======
-    // Place all business modules here.Do NOT add fallback modules here.
+    ConfigModule.forRoot({ isGlobal: true }),
     BillModule,
-    // ====== @route-section: business-modules END ======
-
-    // ⚠️ @route-order: last
-    // ViewModule is the fallback route module, must be registered last.
     ViewModule,
   ],
   providers: [
@@ -26,4 +21,8 @@ import { BillModule } from './modules/bill/bill.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MockUserMiddleware).forRoutes(BillController);
+  }
+}

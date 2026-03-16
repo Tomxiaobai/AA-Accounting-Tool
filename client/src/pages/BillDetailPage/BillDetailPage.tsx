@@ -14,8 +14,11 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
-import { resolveAppUrl } from '@lark-apaas/client-toolkit/utils/resolveAppUrl';
 import { toast } from 'sonner';
+
+function resolveAppUrl(path: string): string {
+  return window.location.origin + (process.env.CLIENT_BASE_PATH || '') + path;
+}
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

@@ -7,7 +7,6 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
 import type { Request } from 'express';
 import { BillService } from './bill.service';
 import type {
@@ -23,7 +22,6 @@ import type {
   AddExpenseResponse,
   StatisticsData,
   JoinBillResponse,
-  MemberStat,
   SettlementData,
 } from '@shared/api.interface';
 
@@ -31,7 +29,6 @@ import type {
 export class BillController {
   constructor(private readonly billService: BillService) {}
 
-  // 获取当前用户参与的账单列表
   @Get()
   async getBills(
     @Req() req: Request,
@@ -46,8 +43,6 @@ export class BillController {
     );
   }
 
-  // 创建新账单
-  @NeedLogin()
   @Post()
   async createBill(
     @Req() req: Request,
@@ -57,7 +52,6 @@ export class BillController {
     return this.billService.createBill(userId, dto);
   }
 
-  // 获取账单详情
   @Get(':id')
   async getBillDetail(
     @Req() req: Request,
@@ -67,7 +61,6 @@ export class BillController {
     return this.billService.getBillDetail(userId, billId);
   }
 
-  // 获取账单消费记录
   @Get(':id/expenses')
   async getBillExpenses(
     @Req() req: Request,
@@ -77,7 +70,6 @@ export class BillController {
     return this.billService.getBillExpenses(userId, billId);
   }
 
-  // 获取账单成员列表
   @Get(':id/members')
   async getBillMembers(
     @Req() req: Request,
@@ -88,8 +80,6 @@ export class BillController {
     return { items };
   }
 
-  // 添加成员到账单
-  @NeedLogin()
   @Post(':id/members')
   async addMember(
     @Req() req: Request,
@@ -100,8 +90,6 @@ export class BillController {
     return this.billService.addMember(userId, billId, dto);
   }
 
-  // 添加消费记录
-  @NeedLogin()
   @Post(':id/expenses')
   async addExpense(
     @Req() req: Request,
@@ -112,7 +100,6 @@ export class BillController {
     return this.billService.addExpense(userId, billId, dto);
   }
 
-  // 获取分类统计数据
   @Get(':id/statistics')
   async getStatistics(
     @Req() req: Request,
@@ -123,8 +110,6 @@ export class BillController {
     return this.billService.getStatistics(userId, billId, type || 'all');
   }
 
-  // 通过邀请链接加入账单
-  @NeedLogin()
   @Post('join/:billId')
   async joinByInvite(
     @Req() req: Request,
@@ -132,13 +117,9 @@ export class BillController {
   ): Promise<JoinBillResponse> {
     const { userId } = req.userContext;
     const result = await this.billService.addMember(userId, billId, { userId });
-    return {
-      ...result,
-      isNewMember: true,
-    };
+    return { ...result, isNewMember: true };
   }
 
-  // 获取结算数据
   @Get(':id/settlement')
   async getSettlement(
     @Req() req: Request,

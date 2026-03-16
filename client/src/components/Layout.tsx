@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { useAppInfo } from '@lark-apaas/client-toolkit/hooks/useAppInfo';
-import { useCurrentUserProfile } from '@lark-apaas/client-toolkit/hooks/useCurrentUserProfile';
-import { getDataloom } from '@lark-apaas/client-toolkit/dataloom';
-import { logger } from '@lark-apaas/client-toolkit/logger';
 import {
   Receipt,
   User,
   LogOut,
-  LogIn,
 } from 'lucide-react';
 import {
   Dialog,
@@ -31,27 +26,8 @@ const navItems: NavItem[] = [
 ];
 
 const Layout = () => {
-  const { appName } = useAppInfo();
-  const userInfo = useCurrentUserProfile();
   const location = useLocation();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-
-  const isLoggedIn = !!userInfo?.user_id;
-
-  const handleLogout = async () => {
-    const dataloom = await getDataloom();
-    const result = await dataloom.service.session.signOut();
-    if (result.error) {
-      logger.error('退出登录失败:', result.error.message);
-      return;
-    }
-    window.location.reload();
-  };
-
-  const handleLogin = async () => {
-    const dataloom = await getDataloom();
-    dataloom.service.session.redirectToLogin();
-  };
 
   // Hide nav on detail pages
   const showBottomNav = !location.pathname.startsWith('/bills/') || location.pathname === '/bills';
@@ -65,19 +41,15 @@ const Layout = () => {
             <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
               <Receipt className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-lg tracking-tight">{appName || 'AA记账'}</span>
+            <span className="font-semibold text-lg tracking-tight">AA记账</span>
           </div>
-          
+
           {/* User Avatar */}
           <button
-            onClick={() => isLoggedIn ? setShowLogoutDialog(true) : handleLogin()}
+            onClick={() => setShowLogoutDialog(true)}
             className="w-8 h-8 rounded-full overflow-hidden bg-muted flex items-center justify-center hover:ring-2 hover:ring-primary/20 transition-all"
           >
-            {userInfo?.avatar ? (
-              <img src={userInfo.avatar} alt="avatar" className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-4 h-4 text-muted-foreground" />
-            )}
+            <User className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
       </header>
@@ -124,33 +96,6 @@ const Layout = () => {
           </div>
         </nav>
       )}
-
-      {/* Logout Dialog */}
-      <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="sm:max-w-[320px] rounded-2xl">
-          <DialogHeader>
-            <DialogTitle>确认退出</DialogTitle>
-            <DialogDescription>确定要退出登录吗？</DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex gap-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowLogoutDialog(false)}
-              className="flex-1 rounded-xl"
-            >
-              取消
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="destructive"
-              className="flex-1 rounded-xl"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              退出
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Safe area spacer for bottom nav */}
       {showBottomNav && <div className="h-16" />}

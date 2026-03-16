@@ -1,0 +1,246 @@
+<wxs module="util">
+function formatAmount(amount) {
+  return '¥' + Number(amount || 0).toFixed(2);
+}
+function getCategoryEmoji(category) {
+  var map = {
+    '餐饮': '🍽️', '交通': '🚗', '住宿': '🏨',
+    '娱乐': '🎮', '购物': '🛍️', '其他': '📦'
+  };
+  return map[category] || '📦';
+}
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  var d = getDate(dateStr);
+  return d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate();
+}
+function formatBalance(balance) {
+  if (balance >= 0) {
+    return '应收 ¥' + Number(balance).toFixed(2);
+  }
+  return '应付 ¥' + Number(0 - balance).toFixed(2);
+}
+function balanceClass(balance) {
+  return balance >= 0 ? 'text-green' : 'text-red';
+}
+module.exports = {
+  formatAmount: formatAmount,
+  getCategoryEmoji: getCategoryEmoji,
+  formatDate: formatDate,
+  formatBalance: formatBalance,
+  balanceClass: balanceClass
+};
+</wxs>
+
+<!-- 加载中 -->
+<view class="loading-wrap" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+</view>
+
+<view class="page" wx:else>
+  <!-- 账单不存在 -->
+  <view class="empty-state" wx:if="{{!bill}}">
+    <text class="text-muted">账单不存在</text>
+  </view>
+
+  <block wx:else>
+    <!-- 账单信息卡片 -->
+    <view class="card summary-card">
+      <view class="summary-top">
+        <view class="summary-icon-wrap">
+          <text class="summary-icon">🧾</text>
+        </view>
+        <view class="summary-amount">
+          <text class="summary-label text-muted">总金额</text>
+          <text class="summary-value text-primary font-money">{{util.formatAmount(bill.totalAmount)}}</text>
+        </view>
+      </view>
+      <view class="summary-bottom">
+        <text class="summary-meta">👥 {{members.length}} 人参与</text>
+        <text class="summary-meta-sep">·</text>
+        <text class="summary-meta">人均 {{util.formatAmount(members.length > 0 ? bill.totalAmount / members.length : 0)}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-row">
+      <button class="btn btn-primary action-btn" bindtap="goAddExpense">
+        <text>➕ 添加消费</text>
+      </button>
+      <button class="btn btn-outline action-btn" open-type="share">
+        <text>📤 分享邀请</text>
+      </button>
+    </view>
+
+    <!-- 功能按钮行 -->
+    <view class="func-row">
+      <button class="btn btn-outline func-btn" bindtap="goStatistics">
+        📊 统计
+      </button>
+      <button class="btn btn-outline func-btn" bindtap="loadSettlement" disabled="{{settlementLoading}}">
+        {{settlementLoading ? '计算中...' : '💰 结算'}}
+      </button>
+      <button class="btn btn-outline func-btn" bindtap="showAddMemberDialog">
+        👤 添加成员
+      </button>
+    </view>
+
+    <!-- Tab切换 -->
+    <view class="tab-bar">
+      <view
+        class="tab-item {{activeTab === 'expenses' ? 'tab-active' : ''}}"
+        bindtap="switchTab"
+        data-tab="expenses"
+      >
+        消费记录
+      </view>
+      <view
+        class="tab-item {{activeTab === 'members' ? 'tab-active' : ''}}"
+        bindtap="switchTab"
+        data-tab="members"
+      >
+        参与成员
+      </view>
+    </view>
+
+    <!-- 消费记录列表 -->
+    <view wx:if="{{activeTab === 'expenses'}}">
+      <view class="empty-state" wx:if="{{expenses.length === 0}}">
+        <view class="empty-icon">🧾</view>
+        <text class="text-muted">暂无消费记录</text>
+        <button class="btn btn-ghost" style="margin-top: 16rpx;" bindtap="goAddExpense">
+          添加第一笔消费
+        </button>
+      </view>
+      <view class="record-list" wx:else>
+        <view class="card record-card" wx:for="{{expenses}}" wx:key="id">
+          <view class="record-left">
+            <view class="record-icon-wrap">
+              <text class="record-icon">{{util.getCategoryEmoji(item.category)}}</text>
+            </view>
+            <view class="record-info">
+              <text class="record-category">{{item.category}}</text>
+              <text class="record-note text-muted" wx:if="{{item.note}}">{{item.note}}</text>
+              <view class="record-meta">
+                <text class="text-muted">{{item.payer}}</text>
+                <text class="text-muted"> · {{util.formatDate(item.createdAt)}}</text>
+              </view>
+            </view>
+          </view>
+          <text class="record-amount font-money">{{util.formatAmount(item.amount)}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成员列表 -->
+    <view wx:if="{{activeTab === 'members'}}">
+      <view class="record-list">
+        <view class="card record-card" wx:for="{{members}}" wx:key="id">
+          <view class="record-left">
+            <view class="member-avatar">
+              <text>👤</text>
+            </view>
+            <view class="record-info">
+              <text class="record-category">{{item.userId}}</text>
+            </view>
+          </view>
+          <view class="member-share">
+            <text class="record-amount font-money">{{util.formatAmount(item.shareAmount)}}</text>
+            <text class="text-muted" style="font-size: 22rpx;">应付</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+
+<!-- 结算弹窗（放在page外层确保fixed定位正确） -->
+<view class="modal-mask" wx:if="{{showSettlement}}" bindtap="hideSettlement"></view>
+<view class="modal-dialog settlement-dialog" wx:if="{{showSettlement}}">
+  <view class="modal-header">
+    <text class="modal-title">AA结算</text>
+    <text class="modal-desc text-muted">自动计算转账方案</text>
+  </view>
+
+  <scroll-view scroll-y class="settlement-scroll" wx:if="{{settlementData}}">
+    <!-- 总览 -->
+    <view class="settlement-overview">
+      <view class="overview-item">
+        <text class="overview-label text-muted">总费用</text>
+        <text class="overview-value font-money">{{util.formatAmount(settlementData.totalAmount)}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label text-muted">人均</text>
+        <text class="overview-value font-money">{{util.formatAmount(settlementData.avgAmount)}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label text-muted">成员</text>
+        <text class="overview-value">{{settlementData.memberCount}}人</text>
+      </view>
+    </view>
+
+    <!-- 成员明细 -->
+    <view class="settlement-section">
+      <text class="section-title text-muted">成员明细</text>
+      <view class="member-detail" wx:for="{{settlementData.members}}" wx:key="userId">
+        <text class="member-name">{{item.userId}}</text>
+        <view class="member-balance">
+          <text class="font-money" style="font-size: 26rpx;">支付 {{util.formatAmount(item.paidAmount)}}</text>
+          <text class="{{util.balanceClass(item.balance)}}" style="font-size: 22rpx;">
+            {{util.formatBalance(item.balance)}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 转账方案 -->
+    <view class="settlement-section" wx:if="{{settlementData.transfers.length > 0}}">
+      <text class="section-title text-muted">转账方案</text>
+      <view class="transfer-item" wx:for="{{settlementData.transfers}}" wx:key="index">
+        <text class="transfer-from">{{item.fromUserId}}</text>
+        <view class="transfer-arrow">
+          <text class="font-money text-primary" style="font-size: 26rpx;">{{util.formatAmount(item.amount)}}</text>
+          <text style="font-size: 24rpx;">→</text>
+        </view>
+        <text class="transfer-to">{{item.toUserId}}</text>
+      </view>
+    </view>
+
+    <view class="settlement-perfect" wx:if="{{settlementData.transfers.length === 0}}">
+      <text>✅ 完美平衡！无需转账</text>
+    </view>
+  </scroll-view>
+
+  <view class="settlement-footer">
+    <button class="btn btn-primary" style="width: 100%; height: 80rpx;" bindtap="hideSettlement">完成</button>
+  </view>
+</view>
+
+<!-- 添加成员弹窗 -->
+<view class="modal-mask" wx:if="{{showAddMember}}" bindtap="hideAddMember"></view>
+<view class="modal-dialog" wx:if="{{showAddMember}}">
+  <view class="modal-header">
+    <text class="modal-title">添加成员</text>
+    <text class="modal-desc text-muted">输入成员用户ID</text>
+  </view>
+  <view class="modal-body">
+    <input
+      class="input-field"
+      placeholder="输入成员ID"
+      value="{{newMemberId}}"
+      bindinput="onMemberIdInput"
+      bindconfirm="handleAddMember"
+      focus="{{showAddMember}}"
+    />
+  </view>
+  <view class="modal-footer">
+    <button class="btn btn-outline modal-btn" bindtap="hideAddMember">取消</button>
+    <button
+      class="btn btn-primary modal-btn"
+      bindtap="handleAddMember"
+      disabled="{{addingMember || newMemberId.length === 0}}"
+    >
+      {{addingMember ? '添加中...' : '添加'}}
+    </button>
+  </view>
+</view>

@@ -1,0 +1,112 @@
+<wxs module="util">
+function formatAmount(amount) {
+  return '¥' + Number(amount || 0).toFixed(2);
+}
+function getCategoryEmoji(category) {
+  var map = {
+    '餐饮': '🍽️', '交通': '🚗', '住宿': '🏨',
+    '娱乐': '🎮', '购物': '🛍️', '其他': '📦'
+  };
+  return map[category] || '📦';
+}
+module.exports = { formatAmount: formatAmount, getCategoryEmoji: getCategoryEmoji };
+</wxs>
+
+<!-- 加载中 -->
+<view class="loading-wrap" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+</view>
+
+<view class="page" wx:else>
+  <block wx:if="{{stats}}">
+    <!-- 总览卡片 -->
+    <view class="card overview-card">
+      <view class="overview-grid">
+        <view class="overview-item">
+          <text class="overview-value font-money text-primary">{{util.formatAmount(stats.totalAmount)}}</text>
+          <text class="overview-label text-muted">总支出</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value">{{stats.totalExpenses}}</text>
+          <text class="overview-label text-muted">消费笔数</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value">{{stats.memberCount}}</text>
+          <text class="overview-label text-muted">成员数</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value font-money">{{util.formatAmount(stats.avgAmount)}}</text>
+          <text class="overview-label text-muted">人均</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab切换 -->
+    <view class="tab-bar">
+      <view
+        class="tab-item {{activeTab === 'category' ? 'tab-active' : ''}}"
+        bindtap="switchTab"
+        data-tab="category"
+      >
+        分类统计
+      </view>
+      <view
+        class="tab-item {{activeTab === 'member' ? 'tab-active' : ''}}"
+        bindtap="switchTab"
+        data-tab="member"
+      >
+        成员统计
+      </view>
+    </view>
+
+    <!-- 分类统计 -->
+    <view wx:if="{{activeTab === 'category'}}">
+      <view class="empty-state" wx:if="{{stats.categoryStats.length === 0}}">
+        <text class="text-muted">暂无消费数据</text>
+      </view>
+      <view class="stat-list" wx:else>
+        <view class="card stat-card" wx:for="{{stats.categoryStats}}" wx:key="category">
+          <view class="stat-left">
+            <view class="stat-icon">
+              <text>{{util.getCategoryEmoji(item.category)}}</text>
+            </view>
+            <view class="stat-info">
+              <text class="stat-name">{{item.category}}</text>
+              <view class="progress-bar">
+                <view class="progress-fill" style="width: {{item.percentage}}%"></view>
+              </view>
+            </view>
+          </view>
+          <view class="stat-right">
+            <text class="stat-amount font-money">{{util.formatAmount(item.amount)}}</text>
+            <text class="stat-percent text-muted">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成员统计 -->
+    <view wx:if="{{activeTab === 'member'}}">
+      <view class="empty-state" wx:if="{{stats.memberStats.length === 0}}">
+        <text class="text-muted">暂无成员数据</text>
+      </view>
+      <view class="stat-list" wx:else>
+        <view class="card stat-card" wx:for="{{stats.memberStats}}" wx:key="userId">
+          <view class="stat-left">
+            <view class="member-avatar">
+              <text>👤</text>
+            </view>
+            <view class="stat-info">
+              <text class="stat-name">{{item.userId}}</text>
+              <text class="text-muted" style="font-size: 22rpx;">{{item.expenseCount}} 笔消费</text>
+            </view>
+          </view>
+          <view class="stat-right">
+            <text class="stat-amount font-money">{{util.formatAmount(item.amount)}}</text>
+            <text class="stat-percent text-muted">{{item.percentage}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

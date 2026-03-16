@@ -1,0 +1,83 @@
+<wxs module="util">
+function getCategoryEmoji(category) {
+  var map = {
+    '餐饮': '🍽️', '交通': '🚗', '住宿': '🏨',
+    '娱乐': '🎮', '购物': '🛍️', '其他': '📦'
+  };
+  return map[category] || '📦';
+}
+module.exports = { getCategoryEmoji: getCategoryEmoji };
+</wxs>
+
+<view class="page">
+  <!-- 金额输入 -->
+  <view class="section">
+    <text class="section-label">金额</text>
+    <view class="amount-input-wrap">
+      <text class="amount-prefix">¥</text>
+      <input
+        class="amount-input"
+        type="digit"
+        placeholder="0.00"
+        value="{{amount}}"
+        bindinput="onAmountInput"
+        focus="true"
+      />
+    </view>
+  </view>
+
+  <!-- 分类选择 -->
+  <view class="section">
+    <text class="section-label">分类</text>
+    <view class="category-grid">
+      <view
+        wx:for="{{categories}}"
+        wx:key="*this"
+        class="category-item {{category === item ? 'category-active' : ''}}"
+        bindtap="selectCategory"
+        data-cat="{{item}}"
+      >
+        <text class="category-emoji">{{util.getCategoryEmoji(item)}}</text>
+        <text class="category-name">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="section">
+    <text class="section-label">备注（可选）</text>
+    <input
+      class="input-field"
+      placeholder="例如：午餐"
+      value="{{note}}"
+      bindinput="onNoteInput"
+    />
+  </view>
+
+  <!-- 付款人选择 -->
+  <view class="section">
+    <text class="section-label">付款人</text>
+    <picker
+      mode="selector"
+      range="{{members}}"
+      range-key="userId"
+      value="{{selectedPayerIndex}}"
+      bindchange="selectPayer"
+    >
+      <view class="picker-field">
+        <text wx:if="{{selectedPayerIndex >= 0}}">👤 {{members[selectedPayerIndex].userId}}</text>
+        <text class="text-muted" wx:else>请选择付款人</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 提交按钮 -->
+  <button
+    class="btn btn-primary submit-btn"
+    bindtap="handleSubmit"
+    disabled="{{submitting || amount.length === 0 || selectedPayerIndex < 0}}"
+  >
+    {{submitting ? '提交中...' : '确认添加'}}
+  </button>
+</view>
