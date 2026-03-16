@@ -30,10 +30,25 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
     </button>
   </view>
 
-  <!-- 加载中 -->
-  <view class="loading-wrap" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-  </view>
+  <!-- 加载骨架 -->
+  <block wx:if="{{loading}}">
+    <view class="skeleton-list">
+      <view class="card skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-row">
+          <view class="skeleton skeleton-circle"></view>
+          <view class="skeleton-col">
+            <view class="skeleton skeleton-line skeleton-line-lg"></view>
+            <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-medium"></view>
+          </view>
+          <view class="skeleton skeleton-chip"></view>
+        </view>
+        <view class="skeleton-row skeleton-footer">
+          <view class="skeleton skeleton-line skeleton-line-md skeleton-line-medium"></view>
+          <view class="skeleton skeleton-line skeleton-line-md skeleton-line-short"></view>
+        </view>
+      </view>
+    </view>
+  </block>
 
   <!-- 未登录状态 -->
   <view class="empty-state" wx:elif="{{!isLoggedIn}}" bindtap="openLoginDialog">
@@ -56,7 +71,7 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
   </view>
 
   <!-- 账单列表 -->
-  <view class="bill-list" wx:elif="{{isLoggedIn && bills.length > 0}}">
+  <view class="bill-list" wx:else>
     <view
       class="card bill-card"
       wx:for="{{bills}}"
@@ -103,7 +118,7 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
   <view class="modal-body">
     <!-- type="nickname" 调起微信昵称选择器，选中后通过 bindblur 回写 -->
     <input
-      class="input-field input-field-center"
+      class="input-field input-field-center modal-input"
       type="nickname"
       placeholder="输入或选择微信昵称"
       placeholder-class="placeholder-center"
@@ -135,7 +150,7 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
   </view>
   <view class="modal-body">
     <input
-      class="input-field input-field-center"
+      class="input-field input-field-center modal-input"
       placeholder="例如：周末聚餐"
       placeholder-class="placeholder-center"
       value="{{newBillName}}"

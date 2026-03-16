@@ -12,13 +12,59 @@ function getCategoryEmoji(category) {
 module.exports = { formatAmount: formatAmount, getCategoryEmoji: getCategoryEmoji };
 </wxs>
 
-<!-- 加载中 -->
-<view class="loading-wrap" wx:if="{{loading}}">
-  <view class="loading-spinner"></view>
-</view>
+<view class="page">
+  <!-- 加载骨架 -->
+  <block wx:if="{{loading}}">
+    <view class="card skeleton-card overview-skeleton">
+      <view class="overview-grid">
+        <view class="overview-item">
+          <view class="skeleton skeleton-line skeleton-line-lg skeleton-line-medium"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+        </view>
+        <view class="overview-item">
+          <view class="skeleton skeleton-line skeleton-line-lg skeleton-line-medium"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+        </view>
+        <view class="overview-item">
+          <view class="skeleton skeleton-line skeleton-line-lg skeleton-line-medium"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+        </view>
+        <view class="overview-item">
+          <view class="skeleton skeleton-line skeleton-line-lg skeleton-line-medium"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+        </view>
+      </view>
+    </view>
 
-<view class="page" wx:else>
-  <block wx:if="{{stats}}">
+    <view class="skeleton-tabs skeleton-row">
+      <view class="skeleton skeleton-rect skeleton-tab"></view>
+      <view class="skeleton skeleton-rect skeleton-tab"></view>
+    </view>
+
+    <view class="stat-list">
+      <view class="card skeleton-card stat-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="stat-left">
+          <view class="skeleton skeleton-circle"></view>
+          <view class="stat-info">
+            <view class="skeleton skeleton-line skeleton-line-md skeleton-line-medium"></view>
+            <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+          </view>
+        </view>
+        <view class="stat-right">
+          <view class="skeleton skeleton-line skeleton-line-md" style="width: 120rpx;"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-short"></view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <block wx:elif="{{!stats}}">
+    <view class="empty-state">
+      <text class="text-muted">暂无统计数据</text>
+    </view>
+  </block>
+
+  <block wx:else>
     <!-- 总览卡片 -->
     <view class="card overview-card">
       <view class="overview-grid">

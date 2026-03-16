@@ -1,8 +1,8 @@
-/* ===== 全局样式 - Apple HIG 风格 ===== */
+/* ===== 全局样式 - Apple HIG 风格（柔和科技感） ===== */
 page {
-  background-color: #f2f2f7;
+  background-color: #f5f7fb;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-  color: #1c1c1e;
+  color: #1c1f24;
   font-size: 28rpx;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -10,6 +10,28 @@ page {
 
 view, text, button, input, picker, scroll-view {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 设计令牌 */
+.text-primary { color: #23c4aa; }
+.bg-primary { background-color: #23c4aa; }
+.text-muted { color: #8d93a6; }
+.text-white { color: #ffffff; }
+.bg-accent { background-color: #e8f7f3; }
+.border-soft { border: 1rpx solid rgba(28, 31, 36, 0.06); }
+.shadow-soft { box-shadow: 0 12rpx 36rpx rgba(13, 41, 30, 0.06); }
+.shadow-card { box-shadow: 0 6rpx 24rpx rgba(13, 41, 30, 0.05); }
+.glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
+}
+.field-wide {
+  width: 100%;
+  max-width: 760rpx;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* 通用卡片 */
@@ -17,25 +39,14 @@ view, text, button, input, picker, scroll-view {
   background: #ffffff;
   border-radius: 24rpx;
   padding: 32rpx;
-  box-shadow: 0 1rpx 0 rgba(0, 0, 0, 0.04),
-              0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8rpx 30rpx rgba(13, 41, 30, 0.04);
+  border: 1rpx solid rgba(28, 31, 36, 0.04);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
 
-/* 主色调 - iOS 薄荷绿 */
-.text-primary {
-  color: #34c759;
-}
-
-.bg-primary {
-  background-color: #34c759;
-}
-
-.text-muted {
-  color: #8e8e93;
-}
-
-.text-white {
-  color: #ffffff;
+.card:active {
+  transform: translateY(2rpx) scale(0.995);
+  box-shadow: 0 6rpx 18rpx rgba(13, 41, 30, 0.08);
 }
 
 /* 按钮 */
@@ -43,86 +54,74 @@ view, text, button, input, picker, scroll-view {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16rpx;
-  font-weight: 600;
+  border-radius: 20rpx;
+  font-weight: 700;
   border: none;
   padding: 0;
   line-height: 1.5;
   letter-spacing: -0.2rpx;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  min-height: 88rpx;
 }
 
-.btn::after {
-  border: none;
-}
+.btn::after { border: none; }
 
 .btn-primary {
-  background: linear-gradient(135deg, #30d158 0%, #34c759 100%);
+  background: linear-gradient(135deg, #27d2b6 0%, #23c4aa 100%);
   color: #ffffff;
-  height: 88rpx;
+  box-shadow: 0 10rpx 28rpx rgba(35, 196, 170, 0.3);
   font-size: 30rpx;
 }
 
 .btn-primary:active {
-  opacity: 0.85;
-  transform: scale(0.98);
+  opacity: 0.9;
+  transform: scale(0.985);
 }
 
 .btn-primary[disabled] {
-  background: #d1d1d6;
-  color: rgba(255, 255, 255, 0.6);
+  background: #d7d9e0;
+  color: rgba(255, 255, 255, 0.7);
   box-shadow: none;
 }
 
 .btn-outline {
   background-color: rgba(255, 255, 255, 0.9);
-  color: #1c1c1e;
-  border: 1rpx solid rgba(0, 0, 0, 0.08);
-  height: 88rpx;
+  color: #1c1f24;
+  border: 1rpx solid rgba(28, 31, 36, 0.08);
   font-size: 30rpx;
 }
 
-.btn-outline:active {
-  background-color: rgba(0, 0, 0, 0.03);
-}
+.btn-outline:active { background-color: rgba(28, 31, 36, 0.03); }
 
 .btn-ghost {
   background: transparent;
-  color: #34c759;
-  font-weight: 500;
+  color: #23c4aa;
+  font-weight: 600;
 }
 
-.btn-ghost:active {
-  opacity: 0.6;
-}
+.btn-ghost:active { opacity: 0.6; }
 
 /* 输入框 */
 .input-field {
   background: #ffffff;
-  border: 2rpx solid rgba(0, 0, 0, 0.08);
-  border-radius: 16rpx;
-  padding: 26rpx 16rpx;
+  border: 2rpx solid rgba(28, 31, 36, 0.08);
+  border-radius: 18rpx;
+  padding: 26rpx 18rpx;
   font-size: 28rpx;
   width: 100%;
   box-sizing: border-box;
-  color: #1c1c1e;
-  transition: border-color 0.2s;
+  color: #1c1f24;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input-field:focus,
 .input-field-focus {
-  border-color: #34c759;
-  box-shadow: 0 0 0 4rpx rgba(52, 199, 89, 0.12);
+  border-color: #23c4aa;
+  box-shadow: 0 0 0 6rpx rgba(35, 196, 170, 0.14);
 }
 
-/* 输入框居中 */
-.input-field-center {
-  text-align: center;
-}
-
-/* placeholder 居中 */
-.placeholder-center {
-  text-align: center;
-}
+.input-field-center { text-align: center; }
+.placeholder-center { text-align: center; }
 
 /* 金额文字 */
 .font-money {
@@ -131,24 +130,81 @@ view, text, button, input, picker, scroll-view {
   letter-spacing: -0.5rpx;
 }
 
-/* 加载动画 */
-.loading-spinner {
-  width: 44rpx;
-  height: 44rpx;
-  border: 4rpx solid rgba(0, 0, 0, 0.06);
-  border-top-color: #34c759;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+/* 加载动画（已停用，可按需启用） */
+.loading-spinner { display: none; }
+
+/* Skeleton 占位 */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #eef2f7;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  border: 1rpx solid rgba(28, 31, 36, 0.04);
+  box-shadow: 0 8rpx 30rpx rgba(13, 41, 30, 0.04);
+}
+
+.skeleton-line {
+  height: 22rpx;
+  border-radius: 999rpx;
+  margin-bottom: 14rpx;
+}
+
+.skeleton-line-sm { height: 18rpx; }
+.skeleton-line-md { height: 24rpx; }
+.skeleton-line-lg { height: 30rpx; }
+.skeleton-line-short { width: 36%; }
+.skeleton-line-medium { width: 60%; }
+
+.skeleton-circle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+}
+
+.skeleton-rect {
+  border-radius: 14rpx;
+}
+
+.skeleton-chip {
+  height: 22rpx;
+  width: 90rpx;
+  border-radius: 999rpx;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.skeleton-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* 安全区域 */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-top { padding-top: env(safe-area-inset-top); }
 
 /* 空状态 */
 .empty-state {
@@ -163,13 +219,16 @@ view, text, button, input, picker, scroll-view {
   width: 128rpx;
   height: 128rpx;
   border-radius: 32rpx;
-  background: linear-gradient(135deg, rgba(52, 199, 89, 0.08) 0%, rgba(52, 199, 89, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(35, 196, 170, 0.12) 0%, rgba(35, 196, 170, 0.18) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 32rpx;
   font-size: 56rpx;
+  color: #23c4aa;
 }
+
+/* （loading banner 已移除，保留基础加载 spinner） */
 
 /* ===== 底部弹窗样式（键盘友好） ===== */
 .modal-mask {
@@ -178,7 +237,7 @@ view, text, button, input, picker, scroll-view {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(8, 9, 10, 0.38);
   z-index: 100;
 }
 
@@ -191,13 +250,13 @@ view, text, button, input, picker, scroll-view {
   border-radius: 32rpx 32rpx 0 0;
   padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
   z-index: 101;
-  box-shadow: 0 -8rpx 40rpx rgba(0, 0, 0, 0.12);
+  box-shadow: 0 -10rpx 40rpx rgba(13, 41, 30, 0.12);
 }
 
 .modal-handle {
   width: 64rpx;
   height: 8rpx;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(28, 31, 36, 0.12);
   border-radius: 4rpx;
   margin: 0 auto 28rpx;
 }
@@ -218,12 +277,10 @@ view, text, button, input, picker, scroll-view {
 .modal-desc {
   font-size: 26rpx;
   display: block;
-  color: #8e8e93;
+  color: #8d93a6;
 }
 
-.modal-body {
-  margin-bottom: 32rpx;
-}
+.modal-body { margin-bottom: 32rpx; }
 
 .modal-footer {
   display: flex;
@@ -234,5 +291,16 @@ view, text, button, input, picker, scroll-view {
   flex: 1;
   height: 84rpx;
   font-size: 30rpx;
-  border-radius: 16rpx;
+  border-radius: 18rpx;
+}
+
+.modal-input {
+  width: 100%;
+  max-width: 760rpx;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 30rpx 24rpx;
+  font-size: 30rpx;
+  line-height: 1.35;
+  min-height: 96rpx;
 }

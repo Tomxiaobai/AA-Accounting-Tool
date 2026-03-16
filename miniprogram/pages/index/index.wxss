@@ -29,7 +29,7 @@
   align-items: center;
   gap: 8rpx;
   margin-top: 12rpx;
-  background: rgba(52, 199, 89, 0.1);
+  background: rgba(35, 196, 170, 0.12);
   padding: 6rpx 16rpx;
   border-radius: 20rpx;
 }
@@ -40,7 +40,7 @@
 
 .user-badge-name {
   font-size: 24rpx;
-  color: #34c759;
+  color: #23c4aa;
   font-weight: 600;
 }
 
@@ -53,7 +53,7 @@
   border-radius: 34rpx;
   font-size: 28rpx;
   margin-top: 8rpx;
-  box-shadow: 0 4rpx 20rpx rgba(52, 199, 89, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(35, 196, 170, 0.22);
 }
 
 .btn-icon {
@@ -68,6 +68,17 @@
   align-items: center;
   justify-content: center;
   padding: 120rpx 0;
+}
+
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+
+.skeleton-footer {
+  margin-top: 18rpx;
+  justify-content: space-between;
 }
 
 /* 空状态 */
@@ -136,7 +147,7 @@
   width: 64rpx;
   height: 64rpx;
   border-radius: 18rpx;
-  background: linear-gradient(135deg, rgba(52, 199, 89, 0.08) 0%, rgba(52, 199, 89, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(35, 196, 170, 0.12) 0%, rgba(35, 196, 170, 0.2) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,7 +180,7 @@
 .bill-divider {
   width: 1rpx;
   height: 44rpx;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(28, 31, 36, 0.08);
   margin: 0 28rpx;
 }
 

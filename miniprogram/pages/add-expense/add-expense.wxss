@@ -19,26 +19,39 @@
 
 .amount-input-wrap {
   display: flex;
-  align-items: baseline;
-  justify-content: center;
-  padding: 12rpx 0;
+  align-items: center;
+  gap: 12rpx;
+  justify-content: flex-start;
+  padding: 22rpx 28rpx;
+  background: #ffffff;
+  border-radius: 28rpx;
+  border: 1rpx solid rgba(28, 31, 36, 0.05);
+  box-shadow: 0 12rpx 30rpx rgba(13, 41, 30, 0.05);
+  max-width: 760rpx;
+  margin: 0 auto;
 }
 
 .amount-prefix {
-  font-size: 52rpx;
+  font-size: 48rpx;
   font-weight: 700;
-  color: #34c759;
-  margin-right: 8rpx;
+  color: #23c4aa;
   flex-shrink: 0;
+  padding-top: 6rpx;
 }
 
 .amount-input {
-  font-size: 72rpx;
-  font-weight: 700;
-  color: #1c1c1e;
   flex: 1;
   min-width: 0;
-  text-align: center;
+  width: 100%;
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #1c1c1e;
+  text-align: left;
+  line-height: 1.28;
+  letter-spacing: -0.5rpx;
+  padding: 12rpx 0;
+  min-height: 96rpx;
+  white-space: nowrap;
 }
 
 /* ===== 表单区域 ===== */
@@ -70,14 +83,14 @@
   height: 112rpx;
   background: #ffffff;
   border-radius: 16rpx;
-  border: 2rpx solid rgba(0, 0, 0, 0.06);
+  border: 2rpx solid rgba(28, 31, 36, 0.06);
   box-sizing: border-box;
   transition: all 0.15s ease;
 }
 
 .category-active {
-  background: rgba(52, 199, 89, 0.06);
-  border-color: #34c759;
+  background: rgba(35, 196, 170, 0.12);
+  border-color: #23c4aa;
 }
 
 .category-emoji {
@@ -97,7 +110,7 @@
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  border: 2rpx solid rgba(0, 0, 0, 0.08);
+  border: 2rpx solid rgba(28, 31, 36, 0.08);
   border-radius: 16rpx;
   padding: 24rpx;
   font-size: 30rpx;
@@ -117,7 +130,7 @@
   height: 88rpx;
   font-size: 30rpx;
   border-radius: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(52, 199, 89, 0.3);
+  box-shadow: 0 8rpx 24rpx rgba(35, 196, 170, 0.22);
 }
 
 .submit-btn[disabled] {

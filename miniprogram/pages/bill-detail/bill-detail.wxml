@@ -39,14 +39,49 @@ module.exports = {
 };
 </wxs>
 
-<!-- 加载中 -->
-<view class="loading-wrap" wx:if="{{loading}}">
-  <view class="loading-spinner"></view>
-</view>
+<view class="page">
+  <!-- 加载骨架 -->
+  <block wx:if="{{loading}}">
+    <view class="card skeleton-card summary-skeleton">
+      <view class="skeleton-row">
+        <view class="skeleton skeleton-circle"></view>
+        <view class="skeleton-col">
+          <view class="skeleton skeleton-line skeleton-line-lg"></view>
+          <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-medium"></view>
+        </view>
+      </view>
+      <view class="skeleton-row" style="margin-top: 18rpx;">
+        <view class="skeleton skeleton-line skeleton-line-md skeleton-line-medium"></view>
+        <view class="skeleton skeleton-line skeleton-line-md skeleton-line-short"></view>
+      </view>
+    </view>
 
-<view class="page" wx:else>
+    <view class="action-row skeleton-actions">
+      <view class="skeleton skeleton-rect skeleton-btn"></view>
+      <view class="skeleton skeleton-rect skeleton-btn"></view>
+    </view>
+
+    <view class="skeleton-tabs skeleton-row">
+      <view class="skeleton skeleton-rect skeleton-tab"></view>
+      <view class="skeleton skeleton-rect skeleton-tab"></view>
+    </view>
+
+    <view class="record-list">
+      <view class="card skeleton-card record-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-row">
+          <view class="skeleton skeleton-circle"></view>
+          <view class="skeleton-col">
+            <view class="skeleton skeleton-line skeleton-line-md"></view>
+            <view class="skeleton skeleton-line skeleton-line-sm skeleton-line-medium"></view>
+          </view>
+          <view class="skeleton skeleton-line skeleton-line-md skeleton-line-short" style="width: 120rpx;"></view>
+        </view>
+      </view>
+    </view>
+  </block>
+
   <!-- 账单不存在 -->
-  <view class="empty-state" wx:if="{{!bill}}">
+  <view class="empty-state" wx:elif="{{!bill}}">
     <text class="text-muted">账单不存在</text>
   </view>
 

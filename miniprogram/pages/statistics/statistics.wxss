@@ -10,6 +10,20 @@
   padding: 200rpx 0;
 }
 
+.overview-skeleton {
+  margin-bottom: 28rpx;
+}
+
+.skeleton-tabs {
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-tab {
+  flex: 1;
+  height: 58rpx;
+}
+
 /* ===== 总览卡片 ===== */
 .overview-card {
   margin-bottom: 28rpx;
@@ -57,6 +71,7 @@
   border-radius: 16rpx;
   color: #8e8e93;
   transition: all 0.2s ease;
+  min-height: 64rpx;
 }
 
 .tab-active {
@@ -92,7 +107,7 @@
   width: 60rpx;
   height: 60rpx;
   border-radius: 16rpx;
-  background: linear-gradient(135deg, rgba(52, 199, 89, 0.08) 0%, rgba(52, 199, 89, 0.15) 100%);
+  background: linear-gradient(135deg, rgba(35, 196, 170, 0.12) 0%, rgba(35, 196, 170, 0.2) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,7 +119,7 @@
   width: 60rpx;
   height: 60rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f2f2f7 0%, #e5e5ea 100%);
+  background: linear-gradient(135deg, #f5f7fb 0%, #e8edf5 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,14 +144,14 @@
 /* 进度条 */
 .progress-bar {
   height: 6rpx;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(28, 31, 36, 0.06);
   border-radius: 3rpx;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #30d158, #34c759);
+  background: linear-gradient(90deg, #27d2b6, #23c4aa);
   border-radius: 3rpx;
   transition: width 0.3s ease;
 }

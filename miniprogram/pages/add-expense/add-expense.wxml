@@ -16,7 +16,7 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
     <view class="amount-input-wrap">
       <text class="amount-prefix">¥</text>
       <input
-        class="amount-input"
+        class="amount-input font-money"
         type="digit"
         placeholder="0.00"
         placeholder-style="color:#c7c7cc;"
@@ -48,7 +48,7 @@ module.exports = { getCategoryEmoji: getCategoryEmoji };
   <view class="section">
     <text class="section-label">备注（可选）</text>
     <input
-      class="input-field"
+      class="input-field field-wide modal-input"
       placeholder="例如：午餐"
       placeholder-style="color:#c7c7cc;"
       value="{{note}}"
