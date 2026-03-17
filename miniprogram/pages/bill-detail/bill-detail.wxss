@@ -388,3 +388,15 @@
   padding: 24rpx 40rpx 20rpx;
   border-top: 1rpx solid rgba(0, 0, 0, 0.06);
 }
+
+/* ===== 导出 Canvas（离屏） ===== */
+.export-canvas-wrap {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+}
+
+.export-canvas {
+  width: 600px;
+  height: 1200px;
+}

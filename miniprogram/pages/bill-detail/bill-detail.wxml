@@ -125,6 +125,9 @@ module.exports = {
       <button class="btn btn-outline func-btn" bindtap="showAddMemberDialog">
         👤 添加成员
       </button>
+      <button class="btn btn-outline func-btn" bindtap="handleExport" disabled="{{exporting}}">
+        {{exporting ? '导出中' : '📄 导出'}}
+      </button>
     </view>
 
     <!-- 删除账单（仅创建者可见） -->
@@ -210,6 +213,38 @@ module.exports = {
       </view>
     </view>
   </block>
+</view>
+
+<!-- 登录弹窗（底部弹出） -->
+<view class="modal-mask" wx:if="{{showLoginDialog}}"></view>
+<view class="modal-dialog" wx:if="{{showLoginDialog}}">
+  <view class="modal-handle"></view>
+  <view class="modal-header">
+    <text class="modal-title">欢迎使用 AA记账</text>
+    <text class="modal-desc text-muted">设置你的昵称后查看账单</text>
+  </view>
+  <view class="modal-body">
+    <input
+      class="input-field input-field-center modal-input"
+      type="nickname"
+      placeholder="输入或选择微信昵称"
+      placeholder-class="placeholder-center"
+      value="{{loginName}}"
+      bindinput="onLoginNameInput"
+      bindblur="onLoginNameBlur"
+      bindconfirm="handleLogin"
+      adjust-position="{{true}}"
+    />
+  </view>
+  <view class="modal-footer">
+    <button
+      class="btn btn-primary modal-btn"
+      bindtap="handleLogin"
+      disabled="{{loginName.length === 0}}"
+    >
+      确认
+    </button>
+  </view>
 </view>
 
 <!-- 结算弹窗（底部弹出） -->
@@ -301,4 +336,9 @@ module.exports = {
       {{addingMember ? '添加中...' : '添加'}}
     </button>
   </view>
+</view>
+
+<!-- 导出用离屏 Canvas -->
+<view class="export-canvas-wrap">
+  <canvas type="2d" id="export-canvas" class="export-canvas"></canvas>
 </view>

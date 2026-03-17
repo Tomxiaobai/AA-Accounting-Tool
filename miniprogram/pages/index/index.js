@@ -3,11 +3,21 @@ const { formatAmount, formatDate } = require('../../utils/util');
 
 Page({
   data: {
-    bills: [],
+    allBills: [],
+    displayBills: [],
     loading: true,
     showCreateDialog: false,
     newBillName: '',
     creating: false,
+    // 搜索
+    searchKey: '',
+    // 折叠（默认展示条数，用户可自定义）
+    showAll: false,
+    hasMore: false,
+    filteredCount: 0,
+    displayCount: 5,
+    displayCountOptions: [3, 5, 10, 15, 20],
+    showDisplayCountPicker: false,
     // 登录
     showLoginDialog: false,
     loginName: '',
@@ -19,10 +29,13 @@ Page({
   onShow() {
     var app = getApp();
     var loggedIn = app.isLoggedIn();
+    // 读取用户自定义的展示条数
+    var savedCount = wx.getStorageSync('displayCount');
     this.setData({
       isLoggedIn: loggedIn,
       userName: app.globalData.userName,
-      userId: app.globalData.userId
+      userId: app.globalData.userId,
+      displayCount: savedCount || 5
     });
 
     if (loggedIn) {
@@ -36,12 +49,68 @@ Page({
     try {
       this.setData({ loading: true });
       const res = await api.getBills();
-      this.setData({ bills: res.items, loading: false });
+      // 按更新时间倒排（最近更新的排最前）
+      var items = res.items || [];
+      items.sort(function (a, b) {
+        return new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime();
+      });
+      this.setData({ allBills: items, loading: false });
+      this.applyFilter();
     } catch (err) {
       console.error('加载账单失败:', err);
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false });
     }
+  },
+
+  // 搜索与折叠筛选
+  applyFilter() {
+    var allBills = this.data.allBills;
+    var key = this.data.searchKey.trim().toLowerCase();
+    var filtered = allBills;
+    if (key) {
+      filtered = [];
+      for (var i = 0; i < allBills.length; i++) {
+        if ((allBills[i].name || '').toLowerCase().indexOf(key) !== -1) {
+          filtered.push(allBills[i]);
+        }
+      }
+    }
+    var count = this.data.displayCount;
+    var hasMore = filtered.length > count;
+    var display = this.data.showAll ? filtered : filtered.slice(0, count);
+    this.setData({ displayBills: display, hasMore: hasMore, filteredCount: filtered.length });
+  },
+
+  onSearchInput(e) {
+    this.setData({ searchKey: e.detail.value, showAll: false });
+    this.applyFilter();
+  },
+
+  clearSearch() {
+    this.setData({ searchKey: '', showAll: false });
+    this.applyFilter();
+  },
+
+  toggleShowAll() {
+    this.setData({ showAll: !this.data.showAll });
+    this.applyFilter();
+  },
+
+  // 展示条数设置
+  showDisplayCountPicker() {
+    this.setData({ showDisplayCountPicker: true });
+  },
+
+  hideDisplayCountPicker() {
+    this.setData({ showDisplayCountPicker: false });
+  },
+
+  selectDisplayCount(e) {
+    var count = Number(e.currentTarget.dataset.count);
+    wx.setStorageSync('displayCount', count);
+    this.setData({ displayCount: count, showAll: false, showDisplayCountPicker: false });
+    this.applyFilter();
   },
 
   onPullDownRefresh() {
@@ -98,7 +167,8 @@ Page({
             isLoggedIn: false,
             userName: '',
             userId: '',
-            bills: [],
+            allBills: [],
+            displayBills: [],
             showLoginDialog: true
           });
         }
