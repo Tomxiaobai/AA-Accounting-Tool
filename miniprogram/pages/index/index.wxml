@@ -24,10 +24,12 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
         <text class="user-badge-name">{{userName}}</text>
       </view>
     </view>
-    <button class="btn btn-primary create-btn" bindtap="showCreateDialog" wx:if="{{isLoggedIn}}">
-      <text class="btn-icon">+</text>
-      <text>新建账单</text>
-    </button>
+    <view class="header-right" wx:if="{{isLoggedIn}}">
+      <button class="btn btn-primary create-btn" bindtap="showCreateDialog">
+        <text class="btn-icon">+</text>
+        <text>新建</text>
+      </button>
+    </view>
   </view>
 
   <!-- 加载骨架 -->
@@ -55,13 +57,19 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
     <view class="empty-icon">👤</view>
     <text class="empty-title">请先设置身份</text>
     <text class="empty-desc">设置你的昵称后开始记账</text>
-    <button class="btn btn-primary empty-btn" bindtap="openLoginDialog">
-      设置身份
-    </button>
+    <button class="btn btn-primary empty-btn" bindtap="openLoginDialog">设置身份</button>
   </view>
 
-  <!-- 已登录且有账单：搜索栏 + 列表/无结果 -->
-  <block wx:elif="{{isLoggedIn && allBills.length > 0}}">
+  <!-- 空状态 -->
+  <view class="empty-state" wx:elif="{{allBills.length === 0}}">
+    <view class="empty-icon">🧾</view>
+    <text class="empty-title">暂无账单</text>
+    <text class="empty-desc">创建一个新的AA账单，开始记录多人消费吧</text>
+    <button class="btn btn-primary empty-btn" bindtap="showCreateDialog">创建首个账单</button>
+  </view>
+
+  <!-- 有账单时：工具栏 + 列表 -->
+  <block wx:else>
     <!-- 搜索栏 -->
     <view class="search-bar">
       <view class="search-wrap">
@@ -75,9 +83,38 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
         />
         <text class="search-clear" wx:if="{{searchKey}}" bindtap="clearSearch">✕</text>
       </view>
-      <view class="display-count-entry" bindtap="showDisplayCountPicker">
-        <text class="text-muted">默认展示</text>
-        <text class="display-count-value">{{displayCount}}条</text>
+      <view class="toolbar-row">
+        <view class="display-count-entry" bindtap="openDisplayCountPicker">
+          <text class="text-muted">展示</text>
+          <text class="display-count-value">{{displayCount}}条</text>
+        </view>
+        <view class="toolbar-actions">
+          <text class="toolbar-link {{showHidden ? 'toolbar-link-active' : ''}}" bindtap="toggleShowHidden">
+            {{showHidden ? '隐藏已隐藏' : '显示已隐藏'}}
+          </text>
+          <text class="toolbar-link" bindtap="toggleBatchMode">
+            {{batchMode ? '取消' : '批量管理'}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 批量操作栏 -->
+    <view class="batch-bar" wx:if="{{batchMode}}">
+      <view class="batch-left" bindtap="selectAllBills">
+        <view class="checkbox checkbox-sm {{selectedCount === displayBills.length && displayBills.length > 0 ? 'checkbox-checked' : ''}}">
+          <text wx:if="{{selectedCount === displayBills.length && displayBills.length > 0}}">✓</text>
+        </view>
+        <text class="batch-label">全选</text>
+        <text class="batch-count" wx:if="{{selectedCount > 0}}">{{selectedCount}}</text>
+      </view>
+      <view class="batch-right">
+        <view class="batch-action batch-action-hide {{selectedCount === 0 ? 'batch-action-disabled' : ''}}" bindtap="batchToggleHide">
+          <text>{{batchHideLabel}}</text>
+        </view>
+        <view class="batch-action batch-action-delete {{selectedCount === 0 ? 'batch-action-disabled' : ''}}" bindtap="batchDeleteBills">
+          <text>删除</text>
+        </view>
       </view>
     </view>
 
@@ -89,64 +126,76 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
     </view>
 
     <!-- 账单列表 -->
-    <block wx:else>
-    <view class="bill-list">
-      <view
-        class="card bill-card"
-        wx:for="{{displayBills}}"
-        wx:key="id"
-        bindtap="goToBillDetail"
-        bindlongpress="handleDeleteBill"
-        data-id="{{item.id}}"
-        data-name="{{item.name}}"
-        data-creator="{{item.creator}}"
-      >
-        <view class="bill-card-top">
-          <view class="bill-info">
-            <text class="bill-name">{{item.name}}</text>
-            <text class="bill-date text-muted">{{util.formatDate(item.createdAt)}}</text>
+    <view class="bill-list" wx:else>
+      <view class="swipe-wrapper" wx:for="{{displayBills}}" wx:key="id">
+        <!-- 滑动露出的操作按钮 -->
+        <view class="swipe-actions" wx:if="{{!batchMode}}">
+          <view class="swipe-btn swipe-btn-hide" bindtap="{{item._hidden ? 'unhideBill' : 'hideBill'}}" data-id="{{item.id}}" data-name="{{item.name}}">
+            <text>{{item._hidden ? '取消隐藏' : '隐藏'}}</text>
           </view>
-          <view class="bill-icon-wrap">
-            <text class="bill-icon">🧾</text>
+          <view class="swipe-btn swipe-btn-delete" bindtap="handleSwipeDelete" data-id="{{item.id}}" data-name="{{item.name}}" data-creator="{{item.creator}}">
+            <text>删除</text>
           </view>
         </view>
-        <view class="bill-card-bottom">
-          <view class="bill-amount">
-            <text class="bill-amount-label text-muted">总金额</text>
-            <text class="bill-amount-value font-money">{{util.formatAmount(item.totalAmount)}}</text>
+
+        <!-- 卡片主体 -->
+        <view
+          class="card bill-card {{swipedBillId === item.id ? 'bill-card-swiped' : ''}} {{item._hidden ? 'bill-card-hidden' : ''}}"
+          bindtouchstart="onTouchStart"
+          bindtouchmove="onTouchMove"
+          bindtouchend="onTouchEnd"
+          bindtap="{{batchMode ? 'toggleSelectBill' : 'goToBillDetail'}}"
+          data-id="{{item.id}}"
+          data-name="{{item.name}}"
+          data-creator="{{item.creator}}"
+        >
+          <!-- 批量选择复选框 -->
+          <view class="checkbox-wrap" wx:if="{{batchMode}}">
+            <view class="checkbox {{selectedIds[item.id] ? 'checkbox-checked' : ''}}">
+              <text wx:if="{{selectedIds[item.id]}}">✓</text>
+            </view>
           </view>
-          <view class="bill-divider"></view>
-          <view class="bill-members">
-            <text class="member-icon">👥</text>
-            <text class="text-muted">{{item.memberCount || 0}} 人参与</text>
+
+          <view class="bill-card-content">
+            <view class="bill-card-top">
+              <view class="bill-info">
+                <view class="bill-name-row">
+                  <text class="bill-name">{{item.name}}</text>
+                  <text class="hidden-tag" wx:if="{{item._hidden}}">已隐藏</text>
+                </view>
+                <text class="bill-date text-muted">{{util.formatDate(item.createdAt)}}</text>
+              </view>
+              <view class="bill-icon-wrap">
+                <text class="bill-icon">🧾</text>
+              </view>
+            </view>
+            <view class="bill-card-bottom">
+              <view class="bill-amount">
+                <text class="bill-amount-label text-muted">总金额</text>
+                <text class="bill-amount-value font-money">{{util.formatAmount(item.totalAmount)}}</text>
+              </view>
+              <view class="bill-divider"></view>
+              <view class="bill-members">
+                <text class="member-icon">👥</text>
+                <text class="text-muted">{{item.memberCount || 0}} 人参与</text>
+              </view>
+            </view>
           </view>
         </view>
-        <text class="bill-hint text-muted" wx:if="{{item.creator === userId}}">长按可删除</text>
       </view>
     </view>
 
     <!-- 展开/收起 -->
-    <view class="toggle-row" wx:if="{{hasMore}}">
+    <view class="toggle-row" wx:if="{{hasMore && displayBills.length > 0}}">
       <button class="btn btn-ghost toggle-btn" bindtap="toggleShowAll">
         {{showAll ? '收起' : '展开全部 (' + filteredCount + ')'}}
         <text class="toggle-arrow">{{showAll ? '▲' : '▼'}}</text>
       </button>
     </view>
   </block>
-  </block>
-
-  <!-- 空状态（已登录但无账单） -->
-  <view class="empty-state" wx:elif="{{isLoggedIn && allBills.length === 0}}">
-    <view class="empty-icon">🧾</view>
-    <text class="empty-title">暂无账单</text>
-    <text class="empty-desc">创建一个新的AA账单，开始记录多人消费吧</text>
-    <button class="btn btn-primary empty-btn" bindtap="showCreateDialog">
-      创建首个账单
-    </button>
-  </view>
 </view>
 
-<!-- 登录弹窗（底部弹出） -->
+<!-- 登录弹窗 -->
 <view class="modal-mask" wx:if="{{showLoginDialog}}"></view>
 <view class="modal-dialog" wx:if="{{showLoginDialog}}">
   <view class="modal-handle"></view>
@@ -155,7 +204,6 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
     <text class="modal-desc text-muted">设置你的昵称，方便其他成员识别</text>
   </view>
   <view class="modal-body">
-    <!-- type="nickname" 调起微信昵称选择器，选中后通过 bindblur 回写 -->
     <input
       class="input-field input-field-center modal-input"
       type="nickname"
@@ -169,13 +217,7 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
     />
   </view>
   <view class="modal-footer">
-    <button
-      class="btn btn-primary modal-btn"
-      bindtap="handleLogin"
-      disabled="{{loginName.length === 0}}"
-    >
-      确认
-    </button>
+    <button class="btn btn-primary modal-btn" bindtap="handleLogin" disabled="{{loginName.length === 0}}">确认</button>
   </view>
 </view>
 
@@ -223,11 +265,7 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
   </view>
   <view class="modal-footer">
     <button class="btn btn-outline modal-btn" bindtap="hideCreateDialog">取消</button>
-    <button
-      class="btn btn-primary modal-btn"
-      bindtap="handleCreateBill"
-      disabled="{{creating || newBillName.length === 0}}"
-    >
+    <button class="btn btn-primary modal-btn" bindtap="handleCreateBill" disabled="{{creating || newBillName.length === 0}}">
       {{creating ? '创建中...' : '创建'}}
     </button>
   </view>

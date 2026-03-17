@@ -44,6 +44,13 @@
   font-weight: 600;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
 /* 新建按钮 */
 .create-btn {
   display: flex;
@@ -52,7 +59,6 @@
   height: 68rpx;
   border-radius: 34rpx;
   font-size: 28rpx;
-  margin-top: 8rpx;
   box-shadow: 0 8rpx 24rpx rgba(35, 196, 170, 0.22);
 }
 
@@ -63,13 +69,6 @@
 }
 
 /* 加载 */
-.loading-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-}
-
 .skeleton-list {
   display: flex;
   flex-direction: column;
@@ -142,20 +141,106 @@
   flex-shrink: 0;
 }
 
-/* ===== 展示条数入口 ===== */
+/* ===== 工具栏 ===== */
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding: 0 4rpx;
+}
+
 .display-count-entry {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 8rpx;
-  margin-top: 16rpx;
-  padding-right: 4rpx;
 }
 
 .display-count-value {
   font-size: 24rpx;
   color: #23c4aa;
   font-weight: 600;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.toolbar-link {
+  font-size: 24rpx;
+  color: #8d93a6;
+}
+
+.toolbar-link-active {
+  color: #23c4aa;
+}
+
+/* ===== 批量操作栏 ===== */
+.batch-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 16rpx;
+  margin-bottom: 16rpx;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16rpx;
+  border: 2rpx solid rgba(28, 31, 36, 0.06);
+}
+
+.batch-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.batch-label {
+  font-size: 24rpx;
+  color: #1c1f24;
+}
+
+.batch-count {
+  font-size: 20rpx;
+  color: #fff;
+  background: #23c4aa;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  padding: 0 8rpx;
+  font-weight: 600;
+}
+
+.batch-right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.batch-action {
+  font-size: 22rpx;
+  font-weight: 500;
+  padding: 8rpx 20rpx;
+  border-radius: 12rpx;
+  transition: opacity 0.15s ease;
+}
+
+.batch-action-hide {
+  background: rgba(255, 149, 0, 0.1);
+  color: #ff9500;
+}
+
+.batch-action-delete {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+}
+
+.batch-action-disabled {
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 /* ===== 条数选择弹窗 ===== */
@@ -224,13 +309,71 @@
   gap: 20rpx;
 }
 
+/* ===== 滑动卡片 ===== */
+.swipe-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24rpx;
+}
+
+.swipe-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: stretch;
+  z-index: 1;
+}
+
+.swipe-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 160rpx;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.swipe-btn-hide {
+  background: #ff9500;
+}
+
+.swipe-btn-delete {
+  background: #ff3b30;
+}
+
+/* ===== 账单卡片 ===== */
 .bill-card {
   padding: 28rpx 32rpx;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.bill-card-swiped {
+  transform: translateX(-320rpx);
+}
+
+.bill-card-hidden {
+  opacity: 0.55;
+}
+
+.bill-card-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .bill-card:active {
   transform: scale(0.975);
+}
+
+.bill-card-swiped:active {
+  transform: translateX(-320rpx);
 }
 
 .bill-card-top {
@@ -245,11 +388,26 @@
   flex-direction: column;
 }
 
+.bill-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
 .bill-name {
   font-size: 32rpx;
   font-weight: 600;
   margin-bottom: 6rpx;
   letter-spacing: -0.3rpx;
+}
+
+.hidden-tag {
+  font-size: 20rpx;
+  color: #ff9500;
+  background: rgba(255, 149, 0, 0.1);
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
 }
 
 .bill-date {
@@ -264,6 +422,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .bill-icon {
@@ -308,12 +467,34 @@
   font-size: 26rpx;
 }
 
-.bill-hint {
-  display: block;
+/* ===== 复选框 ===== */
+.checkbox-wrap {
+  flex-shrink: 0;
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 3rpx solid #c7c7cc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #fff;
+  transition: all 0.15s ease;
+}
+
+.checkbox-checked {
+  background: #23c4aa;
+  border-color: #23c4aa;
+}
+
+.checkbox-sm {
+  width: 32rpx;
+  height: 32rpx;
+  border-width: 2rpx;
   font-size: 20rpx;
-  text-align: right;
-  margin-top: 10rpx;
-  opacity: 0.5;
 }
 
 /* ===== 登录弹窗 ===== */

@@ -51,40 +51,46 @@ async function getBills(page, pageSize) {
   });
 
   var allBills = (res.data && res.data.records) || [];
-  var bills = [];
+
+  // 用 Set 加速查找
+  var billIdSet = {};
+  for (var m = 0; m < myBillIds.length; m++) {
+    billIdSet[myBillIds[m]] = true;
+  }
+
+  var matchedBills = [];
   for (var i = 0; i < allBills.length; i++) {
     var bill = allBills[i];
     bill.id = bill._id;
-    var found = false;
-    for (var m = 0; m < myBillIds.length; m++) {
-      if (myBillIds[m] === bill._id || myBillIds[m] === bill.id) {
-        found = true;
-        break;
-      }
+    if (billIdSet[bill._id] || billIdSet[bill.id]) {
+      matchedBills.push(bill);
     }
-    if (!found) continue;
-
-    // 成员数
-    var memRes = await models.members.list({
-      filter: { where: { billId: { $eq: bill._id } } },
-      getCount: true,
-      pageSize: 1
-    });
-    bill.memberCount = (memRes.data && memRes.data.total) || 0;
-
-    // 总金额
-    var expRes = await models.expenses.list({
-      filter: { where: { billId: { $eq: bill._id } } },
-      pageSize: 1000
-    });
-    var total = 0;
-    var exps = (expRes.data && expRes.data.records) || [];
-    for (var j = 0; j < exps.length; j++) {
-      total += Number(exps[j].amount) || 0;
-    }
-    bill.totalAmount = total;
-    bills.push(bill);
   }
+
+  // 并行查询每个账单的成员数和消费总额（核心性能优化）
+  var enrichTasks = matchedBills.map(function (bill) {
+    return Promise.all([
+      models.members.list({
+        filter: { where: { billId: { $eq: bill._id } } },
+        getCount: true,
+        pageSize: 1
+      }),
+      models.expenses.list({
+        filter: { where: { billId: { $eq: bill._id } } },
+        pageSize: 1000
+      })
+    ]).then(function (results) {
+      bill.memberCount = (results[0].data && results[0].data.total) || 0;
+      var total = 0;
+      var exps = (results[1].data && results[1].data.records) || [];
+      for (var j = 0; j < exps.length; j++) {
+        total += Number(exps[j].amount) || 0;
+      }
+      bill.totalAmount = total;
+      return bill;
+    });
+  });
+  var bills = await Promise.all(enrichTasks);
 
   return { items: bills, page: page, pageSize: pageSize };
 }
