@@ -168,9 +168,18 @@
   gap: 24rpx;
 }
 
-.toolbar-link {
+.toolbar-tap {
   font-size: 24rpx;
   color: #8d93a6;
+  padding: 12rpx 16rpx;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-tap:active {
+  opacity: 0.5;
 }
 
 .toolbar-link-active {
@@ -330,7 +339,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 160rpx;
+  width: 80px;
   color: #fff;
   font-size: 26rpx;
   font-weight: 600;
@@ -347,16 +356,12 @@
 /* ===== 账单卡片 ===== */
 .bill-card {
   padding: 28rpx 32rpx;
-  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
   gap: 20rpx;
-}
-
-.bill-card-swiped {
-  transform: translateX(-320rpx);
+  /* transform 由 WXS 内联设置，此处不定义 transition */
 }
 
 .bill-card-hidden {
@@ -366,14 +371,6 @@
 .bill-card-content {
   flex: 1;
   min-width: 0;
-}
-
-.bill-card:active {
-  transform: scale(0.975);
-}
-
-.bill-card-swiped:active {
-  transform: translateX(-320rpx);
 }
 
 .bill-card-top {

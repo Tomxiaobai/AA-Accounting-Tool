@@ -12,6 +12,7 @@ function formatDate(dateStr) {
 }
 module.exports = { formatAmount: formatAmount, formatDate: formatDate };
 </wxs>
+<wxs module="swipe" src="./swipe.wxs"></wxs>
 
 <!-- 账单列表页 -->
 <view class="page">
@@ -89,12 +90,12 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
           <text class="display-count-value">{{displayCount}}条</text>
         </view>
         <view class="toolbar-actions">
-          <text class="toolbar-link {{showHidden ? 'toolbar-link-active' : ''}}" bindtap="toggleShowHidden">
-            {{showHidden ? '隐藏已隐藏' : '显示已隐藏'}}
-          </text>
-          <text class="toolbar-link" bindtap="toggleBatchMode">
-            {{batchMode ? '取消' : '批量管理'}}
-          </text>
+          <view class="toolbar-tap {{showHidden ? 'toolbar-link-active' : ''}}" bindtap="toggleShowHidden">
+            <text>{{showHidden ? '隐藏已隐藏' : '显示已隐藏'}}</text>
+          </view>
+          <view class="toolbar-tap" bindtap="toggleBatchMode">
+            <text>{{batchMode ? '取消' : '批量管理'}}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -140,10 +141,10 @@ module.exports = { formatAmount: formatAmount, formatDate: formatDate };
 
         <!-- 卡片主体 -->
         <view
-          class="card bill-card {{swipedBillId === item.id ? 'bill-card-swiped' : ''}} {{item._hidden ? 'bill-card-hidden' : ''}}"
-          bindtouchstart="onTouchStart"
-          bindtouchmove="onTouchMove"
-          bindtouchend="onTouchEnd"
+          class="card bill-card {{item._hidden ? 'bill-card-hidden' : ''}}"
+          bindtouchstart="{{batchMode ? '' : swipe.touchstart}}"
+          bindtouchmove="{{batchMode ? '' : swipe.touchmove}}"
+          bindtouchend="{{batchMode ? '' : swipe.touchend}}"
           bindtap="{{batchMode ? 'toggleSelectBill' : 'goToBillDetail'}}"
           data-id="{{item.id}}"
           data-name="{{item.name}}"

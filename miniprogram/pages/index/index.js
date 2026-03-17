@@ -141,43 +141,10 @@ Page({
     this.applyFilter();
   },
 
-  // ========== 滑动操作 ==========
+  // ========== 滑动操作（WXS 回调） ==========
 
-  onTouchStart(e) {
-    if (this.data.batchMode) return;
-    this._touchStartX = e.touches[0].clientX;
-    this._touchStartY = e.touches[0].clientY;
-    this._swiping = false;
-  },
-
-  onTouchMove(e) {
-    if (this.data.batchMode) return;
-    var dx = e.touches[0].clientX - this._touchStartX;
-    var dy = e.touches[0].clientY - this._touchStartY;
-    // 水平滑动距离大于垂直距离才算滑动
-    if (!this._swiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) {
-      this._swiping = true;
-    }
-  },
-
-  onTouchEnd(e) {
-    if (this.data.batchMode) return;
-    var endX = e.changedTouches[0].clientX;
-    var dx = endX - this._touchStartX;
-
-    if (this._swiping && dx < -60) {
-      // 左滑 → 展开操作按钮
-      var id = e.currentTarget.dataset.id;
-      this.setData({ swipedBillId: id });
-    } else if (this._swiping && dx > 60) {
-      // 右滑 → 收起
-      this.setData({ swipedBillId: '' });
-    }
-    this._swiping = false;
-  },
-
-  closeSwipe() {
-    this.setData({ swipedBillId: '' });
+  onSwipeEnd(data) {
+    this.setData({ swipedBillId: data.id || '' });
   },
 
   // ========== 隐藏账单 ==========
@@ -452,7 +419,7 @@ Page({
   },
 
   goToBillDetail(e) {
-    if (this.data.batchMode || this._swiping) return;
+    if (this.data.batchMode) return;
     if (this.data.swipedBillId) {
       this.setData({ swipedBillId: '' });
       return;
